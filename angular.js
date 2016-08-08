@@ -1,12 +1,11 @@
-//var app1=angular.module("app1",[]);
 var app1=angular.module("app1",[]).filter('datafilter',function(){
       return function(inp,s,e){
         return inp.slice(s,e);
         
       }
-  });
+});
 
-app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$exceptionHandler){
+app1.controller('main',function($http,$scope){
 		
 		$scope.crime=[
 			  {"Year":"1985","Over":32871,"Under":61777},
@@ -43,23 +42,38 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
   			{"Year":"2016","Over":3563,"Under":6047}
   		];
 
-    $scope.selectedyear='';
-		$scope.year=[];
 		$scope.s=0;
     $scope.e=$scope.s+3;
 
-
+    $scope.year=[];
     for(var i=0;i<$scope.crime.length;i++){
 			$scope.year.push($scope.crime[i].Year);
 		}
+
     $scope.temp=[];
     $scope.temp=$scope.crime;
+
+    //Pagination
+    var page=function(){
+      $scope.pagination=[];
+      for(var i=0;i<($scope.temp.length)/3;i++){
+          $scope.pagination.push(i+1);
+      }
+    }
+
+    page();
+
+    $scope.select=function(no){
+        $scope.s=(no-1)*3;
+        $scope.e=($scope.s)+3;
+    }
     
+    //For filteration
+
     $scope.pick=function(value,filtervalue){
       $scope.temp=[];
 
       for( var i = 0; i < $scope.crime.length; i++ ) {
-
           if(filtervalue === "Over500") {
             if (value < $scope.crime[i].Over) {
               $scope.temp.push($scope.crime[i]);
@@ -71,10 +85,7 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
             }
           }
       }
-      $scope.pagination=[];
-      for(var i=0;i<($scope.temp.length)/3;i++){
-          $scope.pagination.push(i+1);
-      }
+      page();
     }
 
     $scope.pickd=function(year) {
@@ -85,23 +96,10 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
               $scope.temp.push($scope.crime[i]);
           }
       }
-      $scope.pagination=[];
-      for(var i=0;i<($scope.temp.length)/3;i++){
-          $scope.pagination.push(i+1);
-    }
-    }
-    
-    $scope.pagination=[];
-    for(var i=0;i<($scope.crime.length)/3;i++){
-      $scope.pagination.push(i+1);
+      page();
     }
 
-    $scope.dis=false;
-    $scope.select=function(no){
-        $scope.s=(no-1)*3;
-        $scope.e=($scope.s)+3;
-        $scope.dis=false;
-    }
+    //Sorting
 
    $scope.sortColumn = "year";
    $scope.reverseSort = false;
@@ -122,6 +120,8 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
         return '';
    }
 
+   //Edit and Delete
+
    $scope.edit=function(x){
      $scope.$broadcast("event",x);
    }
@@ -139,11 +139,7 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
     }
     $scope.crime.splice( index, 1 );    
 
-    $scope.pagination=[];
-    for(var i=0;i<($scope.crime.length)/3;i++){
-      $scope.pagination.push(i+1);
-    }
-
+    page();
    };
 
   $scope.$on("event1",function(evt,x,y,z,arg){
@@ -154,11 +150,6 @@ app1.controller('main',function($http,$scope,$window,$location,$interval,$log,$e
       }
     }
   });
-
-  // $scope.add=function(){
-  //    $scope.$broadcast("event2",data);
-  //  }
-
 });
 
 app1.controller('update',function($scope){
@@ -175,26 +166,9 @@ app1.controller('update',function($scope){
   $scope.edited=function(x,y,z){
      $scope.$emit("event1",x,y,z);
    }
-
-   $scope.display=false;
-
-  $scope.$on("event2",function(evt,arg){
-    $scope.display=true;
-  });
-
 });
 
-app1.directive('directive3',function(){
-  return{
-    templateUrl:'top3.html'
-  };
-});
-
-// app1.directive('directive4',function(){
-//   return{
-//     templateUrl:'pro3.html'
-//   };
-// });
+//Directives
 
 app1.directive('directive1',function(){
   return{
@@ -207,3 +181,8 @@ app1.directive('directive2',function(){
   };
 });
 
+app1.directive('directive3',function(){
+  return{
+    templateUrl:'top3.html'
+  };
+});
