@@ -5,7 +5,7 @@
                 <th ng-click="sortData('above500')"><a href=""> Under 500 </a><div ng-class="getSortClass('above500')"></div></th>
     			<th>Edit / Delete</th>
     		</thead>
-    		<tr ng-repeat="x in temp | datafilter:s:e | orderBy:sortColoumn:reverseSort">
+    		<tr ng-repeat="x in temp | datafilter:s:e | orderBy:sortColumn:reverseSort">
     			<td>{{x.Year}}</td>
     			<td>{{x.Over}}</td>
     			<td>{{x.Under}}</td>

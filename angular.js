@@ -105,8 +105,7 @@ app1.controller('main',function($http,$scope){
    $scope.reverseSort = false;
 
    $scope.sortData = function (column) {
-        $scope.reverseSort = ($scope.sortColumn == column) ?
-               !$scope.reverseSort : false;
+        $scope.reverseSort = !$scope.reverseSort;
                $scope.sortColumn = column;
    }
 
